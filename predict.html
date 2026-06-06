@@ -178,46 +178,46 @@
     }
 
     // Perform I Ching divination based on current time
-    function getIChing() {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
-        const day = now.getDate();
-        const hour = now.getHours();
-        const hourNum = getHourNumber(hour);
-
-        const sumBase = year + month + day;
-        const sumFull = year + month + day + hourNum;
-
-        let upper = sumBase % 8;
-        if (upper === 0) upper = 8;
-        let lower = sumFull % 8;
-        if (lower === 0) lower = 8;
-        let moving = sumFull % 6;
-        if (moving === 0) moving = 6;
-
-        // Determine changing line
-        let newUpper = upper, newLower = lower;
-        if (moving <= 3) {
-            // change lower trigram
-            const linePos = moving - 1; // 0 = bottom
-            newLower = flipBitInTrigram(lower, linePos);
-        } else {
-            const linePos = moving - 4; // 0 = bottom of upper trigram
-            newUpper = flipBitInTrigram(upper, linePos);
-        }
-
-        const originalHex = getHexagramInfo(upper, lower);
-        const changedHex = getHexagramInfo(newUpper, newLower);
-        const yaoName = ["bottom", "second", "third", "fourth", "fifth", "top"][moving-1];
-
-        return {
-            original: originalHex,
-            changed: changedHex,
-            movingYao: yaoName,
-            date: `${year}-${month}-${day} ${hour}:00`
-        };
-    }
+function getIChing() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const hour = now.getHours();
+  const minute = now.getMinutes();   // 加入分钟
+  
+  const hourNum = getHourNumber(hour); // 1-12
+  const sumBase = year + month + day + minute;          // 上卦依赖日+分钟
+  const sumFull = year + month + day + hourNum + minute; // 下卦、动爻依赖日+时+分
+  
+  let upper = sumBase % 8;
+  if (upper === 0) upper = 8;
+  let lower = sumFull % 8;
+  if (lower === 0) lower = 8;
+  let moving = sumFull % 6;
+  if (moving === 0) moving = 6;
+  
+  // 动爻变卦（与原来相同）
+  let newUpper = upper, newLower = lower;
+  if (moving <= 3) {
+    const linePos = moving - 1;
+    newLower = flipBitInTrigram(lower, linePos);
+  } else {
+    const linePos = moving - 4;
+    newUpper = flipBitInTrigram(upper, linePos);
+  }
+  
+  const originalHex = getHexagramInfo(upper, lower);
+  const changedHex = getHexagramInfo(newUpper, newLower);
+  const yaoName = ["bottom", "second", "third", "fourth", "fifth", "top"][moving-1];
+  
+  return {
+    original: originalHex,
+    changed: changedHex,
+    movingYao: yaoName,
+    date: `${year}-${month}-${day} ${hour}:${minute}`   // 显示到分钟
+  };
+}
 
     // Render results
     function showResult() {
