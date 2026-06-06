@@ -6,3 +6,249 @@ order: 4
 
 > Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
 {: .prompt-tip }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Ching Time Divination</title>
+    <style>
+        .iching-container {
+            background: #f9f5ef;
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+        }
+        .iching-container button {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: 500;
+        }
+        .iching-container button:hover {
+            background: #e5533d;
+        }
+        .iching-result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 20px;
+            border-left: 6px solid #e5533d;
+        }
+        .iching-result .section {
+            margin-bottom: 1.5rem;
+        }
+        .iching-result .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        .iching-result .hexagram-name {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e5533d;
+        }
+        .iching-result .explanation {
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 0.25rem;
+        }
+        .iching-result hr {
+            margin: 1rem 0;
+            border: 0;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+<div class="iching-container">
+    <button id="getIChingBtn">PREDICT</button>
+    <div id="ichingResult" class="iching-result" style="display: none;">
+        <!-- dynamic content -->
+    </div>
+</div>
+
+<script>
+    // --------------------------------------------------------------
+    // 64 Hexagrams (upper, lower) -> English name and explanation
+    // --------------------------------------------------------------
+    const iChingMap = {
+        "1,1": { name: "Qian (Heaven)", explanation: "Creative, strong, and persevering. Great success through initiative and virtue." },
+        "1,2": { name: "Tian Lu (Treading)", explanation: "Careful conduct. Even treading on a tiger's tail, one remains unharmed if acting with propriety." },
+        "1,3": { name: "Tian Huo Tong Ren (Fellowship)", explanation: "Harmony among people. Cooperation brings success and mutual benefit." },
+        "1,4": { name: "Tian Lei Wu Wang (Innocence)", explanation: "Act without deceit. Follow the natural way; avoid reckless action." },
+        "1,5": { name: "Tian Feng Gou (Encounter)", explanation: "Unexpected meeting. Beware of hidden influences; stay cautious." },
+        "1,6": { name: "Tian Shui Song (Conflict)", explanation: "Dispute arises. Seek mediation; avoid escalating conflicts." },
+        "1,7": { name: "Tian Shan Dun (Retreat)", explanation: "Withdraw temporarily. Preserve strength; wait for better timing." },
+        "1,8": { name: "Tian Di Pi (Standstill)", explanation: "Obstruction and stagnation. The superior person remains humble and avoids entanglement." },
+        "2,1": { name: "Ze Tian Guai (Breakthrough)", explanation: "Decisive action. Remove obstacles and negative influences with resolve." },
+        "2,2": { name: "Dui (Joy)", explanation: "Joyful interaction. Pleasant communication but avoid gossip." },
+        "2,3": { name: "Ze Huo Ge (Revolution)", explanation: "Radical change. Shed the old and embrace the new; timely reform." },
+        "2,4": { name: "Ze Lei Sui (Following)", explanation: "Adapt and follow. Yield to the flow of circumstances for success." },
+        "2,5": { name: "Ze Feng Da Guo (Excess)", explanation: "Critical mass. The burden is heavy; you must stand alone with integrity." },
+        "2,6": { name: "Ze Shui Kun (Exhaustion)", explanation: "Difficulties press. Endure patiently; help will arrive." },
+        "2,7": { name: "Ze Shan Xian (Influence)", explanation: "Mutual attraction. Feelings and relationships flourish." },
+        "2,8": { name: "Ze Di Cui (Gathering)", explanation: "Assembly of talents. Unity and collective strength prevail." },
+        "3,1": { name: "Huo Tian Da You (Great Possession)", explanation: "Abundance and prosperity. Possess great wealth through virtue." },
+        "3,2": { name: "Huo Ze Kui (Divergence)", explanation: "Estrangement. Seek common ground despite differences." },
+        "3,3": { name: "Li (Radiance)", explanation: "Dependence on brightness. Clarity and civilized behavior bring benefit." },
+        "3,4": { name: "Huo Lei Shi Ke (Biting Through)", explanation: "Remove obstructions. Law and punishment may be needed." },
+        "3,5": { name: "Huo Feng Ding (Cauldron)", explanation: "Nourishing the wise. Reform and cultivate talent." },
+        "3,6": { name: "Huo Shui Wei Ji (Before Completion)", explanation: "Not yet finished. Cross with caution; success requires continued effort." },
+        "3,7": { name: "Huo Shan Lu (The Wanderer)", explanation: "Travel and transience. Be humble and adaptable when away from home." },
+        "3,8": { name: "Huo Di Jin (Progress)", explanation: "Advancement with radiance. Shine openly; rise step by step." },
+        "4,1": { name: "Lei Tian Da Zhuang (Great Power)", explanation: "Strength and vigor. Use power justly; avoid excess." },
+        "4,2": { name: "Lei Ze Gui Mei (Marrying Maiden)", explanation: "Improper union. Beware of ill-matched alliances." },
+        "4,3": { name: "Lei Huo Feng (Fullness)", explanation: "Abundance at its peak. Enjoy but know decline will follow." },
+        "4,4": { name: "Zhen (Shock)", explanation: "Thunderous upheaval. Remain calm; face crisis with courage." },
+        "4,5": { name: "Lei Feng Heng (Duration)", explanation: "Persistence and constancy. Success through enduring effort." },
+        "4,6": { name: "Lei Shui Jie (Deliverance)", explanation: "Liberation from trouble. Act decisively to escape danger." },
+        "4,7": { name: "Lei Shan Xiao Guo (Small Excess)", explanation: "Minor overstepping. Be careful; small mistakes can accumulate." },
+        "4,8": { name: "Lei Di Yu (Enthusiasm)", explanation: "Joy and excitement. Plan well and lead others happily." },
+        "5,1": { name: "Feng Tian Xiao Chu (Small Harvest)", explanation: "Accumulating modestly. A little gain; prepare for future growth." },
+        "5,2": { name: "Feng Ze Zhong Fu (Inner Truth)", explanation: "Sincerity moves all. Even pigs and fish are touched by genuine trust." },
+        "5,3": { name: "Feng Huo Jia Ren (Family)", explanation: "Nurturing the household. Harmony starts at home." },
+        "5,4": { name: "Feng Lei Yi (Increase)", explanation: "Benefit and expansion. Gain through generosity and giving." },
+        "5,5": { name: "Xun (Gentle Penetration)", explanation: "Gradual influence. Softness succeeds where force fails." },
+        "5,6": { name: "Feng Shui Huan (Dispersion)", explanation: "Scattering and renewal. Disband old patterns to regroup." },
+        "5,7": { name: "Feng Shan Jian (Gradual Progress)", explanation: "Slow but steady. The maiden marries in good time." },
+        "5,8": { name: "Feng Di Guan (Contemplation)", explanation: "Observe and reflect. Learn from the wise without prejudice." },
+        "6,1": { name: "Shui Tian Xu (Waiting)", explanation: "Patience brings success. Do not rush; the time is not yet ripe." },
+        "6,2": { name: "Shui Ze Jie (Restriction)", explanation: "Discipline and moderation. Excessive limitation is harmful." },
+        "6,3": { name: "Shui Huo Ji Ji (Already Completed)", explanation: "Order after chaos. Maintain vigilance; do not become complacent." },
+        "6,4": { name: "Shui Lei Tun (Beginnings)", explanation: "Difficulty at the start. Build foundations; help is needed." },
+        "6,5": { name: "Shui Feng Jing (The Well)", explanation: "Nourishment without change. Stable support for the community." },
+        "6,6": { name: "Kan (The Abyss)", explanation: "Danger repeated. Stay sincere and cautious; you will overcome." },
+        "6,7": { name: "Shui Shan Jian (Obstruction)", explanation: "Hardship ahead. Turn back or seek help; avoid direct assault." },
+        "6,8": { name: "Shui Di Bi (Union)", explanation: "Alignment with others. Support and togetherness bring good fortune." },
+        "7,1": { name: "Shan Tian Da Chu (Great Accumulation)", explanation: "Store up strength. Prepare for future challenges." },
+        "7,2": { name: "Shan Ze Sun (Decrease)", explanation: "Sacrifice for a greater cause. Loss now leads to gain later." },
+        "7,3": { name: "Shan Huo Bi (Adornment)", explanation: "Elegance and decoration. Substance is more important than surface." },
+        "7,4": { name: "Shan Lei Yi (Nourishment)", explanation: "Provide for oneself. Speak truthfully; seek proper nourishment." },
+        "7,5": { name: "Shan Feng Gu (Corruption)", explanation: "Rottenness and remedy. Reform from within." },
+        "7,6": { name: "Shan Shui Meng (Youthful Folly)", explanation: "Immaturity and inexperience. Seek guidance from a teacher." },
+        "7,7": { name: "Gen (Mountain)", explanation: "Stillness and meditation. Stop when appropriate; rest." },
+        "7,8": { name: "Shan Di Bo (Falling)", explanation: "Collapse and decay. The inferior rise; the superior retreat." },
+        "8,1": { name: "Di Tian Tai (Peace)", explanation: "Harmonious flow. Small goes out, great comes in; everything is smooth." },
+        "8,2": { name: "Di Ze Lin (Approach)", explanation: "Supervision and leadership. Approach others with goodwill." },
+        "8,3": { name: "Di Huo Ming Yi (Darkening of Light)", explanation: "Injury and hiding. The wise endure hardship without despair." },
+        "8,4": { name: "Di Lei Fu (Return)", explanation: "Cyclical renewal. The turning point; good fortune returns." },
+        "8,5": { name: "Di Feng Sheng (Ascending)", explanation: "Rising step by step. Steady progress leads to success." },
+        "8,6": { name: "Di Shui Shi (The Army)", explanation: "Discipline and leadership. Mobilize resources wisely." },
+        "8,7": { name: "Di Shan Qian (Modesty)", explanation: "Humble and self-effacing. Great fortune for the modest." },
+        "8,8": { name: "Kun (The Receptive)", explanation: "Yielding and supportive. Endure with strength; embrace the earth's virtue." }
+    };
+
+    function getHexagramInfo(upper, lower) {
+        const key = `${upper},${lower}`;
+        if (iChingMap[key]) return iChingMap[key];
+        return { name: `Hexagram ${upper}${lower}`, explanation: "No detailed interpretation yet. Reflect on the interaction of the upper and lower trigrams." };
+    }
+
+    function getBasicName(num) {
+        const names = ["", "Qian", "Dui", "Li", "Zhen", "Xun", "Kan", "Gen", "Kun"];
+        return names[num] || num;
+    }
+
+    // Map hour (0-23) to traditional Chinese hour number (1-12, zi=1)
+    function getHourNumber(hour) {
+        const hourMap = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12];
+        return hourMap[hour];
+    }
+
+    // Flip a single line (bit) in a trigram number (1-8)
+    function flipBitInTrigram(trigramNum, linePos) {
+        // linePos 0 = bottom line, 1 = middle, 2 = top
+        const trigramBits = {
+            1: [1,1,1], // Qian
+            2: [1,1,0], // Dui
+            3: [1,0,1], // Li
+            4: [1,0,0], // Zhen
+            5: [0,1,1], // Xun
+            6: [0,1,0], // Kan
+            7: [0,0,1], // Gen
+            8: [0,0,0]  // Kun
+        };
+        const bits = [...trigramBits[trigramNum]];
+        bits[linePos] = 1 - bits[linePos];
+        for (let [k, v] of Object.entries(trigramBits)) {
+            if (v[0] === bits[0] && v[1] === bits[1] && v[2] === bits[2]) return parseInt(k);
+        }
+        return trigramNum; // fallback
+    }
+
+    // Perform I Ching divination based on current time
+    function getIChing() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+        const day = now.getDate();
+        const hour = now.getHours();
+        const hourNum = getHourNumber(hour);
+
+        const sumBase = year + month + day;
+        const sumFull = year + month + day + hourNum;
+
+        let upper = sumBase % 8;
+        if (upper === 0) upper = 8;
+        let lower = sumFull % 8;
+        if (lower === 0) lower = 8;
+        let moving = sumFull % 6;
+        if (moving === 0) moving = 6;
+
+        // Determine changing line
+        let newUpper = upper, newLower = lower;
+        if (moving <= 3) {
+            // change lower trigram
+            const linePos = moving - 1; // 0 = bottom
+            newLower = flipBitInTrigram(lower, linePos);
+        } else {
+            const linePos = moving - 4; // 0 = bottom of upper trigram
+            newUpper = flipBitInTrigram(upper, linePos);
+        }
+
+        const originalHex = getHexagramInfo(upper, lower);
+        const changedHex = getHexagramInfo(newUpper, newLower);
+        const yaoName = ["bottom", "second", "third", "fourth", "fifth", "top"][moving-1];
+
+        return {
+            original: originalHex,
+            changed: changedHex,
+            movingYao: yaoName,
+            date: `${year}-${month}-${day} ${hour}:00`
+        };
+    }
+
+    // Render results
+    function showResult() {
+        const res = getIChing();
+        const resultDiv = document.getElementById('ichingResult');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <div class="section">
+                <div class="section-title">✨ What's the condition you experiencing now</div>
+                <div class="hexagram-name">${res.original.name}</div>
+                <div class="explanation">${res.original.explanation}</div>
+            </div>
+            <div class="section">
+                <div class="section-title">🔮 What's the condition you will be experiencing in the future</div>
+                <div class="hexagram-name">${res.changed.name}</div>
+                <div class="explanation">${res.changed.explanation}</div>
+            </div>
+            <hr>
+            <p style="font-size:0.8rem; color:#888;">Divination performed at ${res.date} · Changing line: ${res.movingYao}</p>
+        `;
+    }
+
+    document.getElementById('getIChingBtn').addEventListener('click', showResult);
+</script>
+</body>
+</html>
