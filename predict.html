@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Ching Time Divination · 1 Free Try</title>
+    <title>I Ching · Ancient Oracle</title>
     <style>
         * {
             margin: 0;
@@ -25,7 +25,7 @@
             background: rgba(255, 255, 255, 0.96);
             backdrop-filter: blur(2px);
             border-radius: 48px;
-            padding: 2rem 2rem 2.5rem;
+            padding: 2rem 2rem 1.5rem;
             max-width: 780px;
             width: 100%;
             margin: 2rem auto;
@@ -61,47 +61,17 @@
             backdrop-filter: blur(4px);
         }
 
-        .pricing-alert {
-            background: #fff2e6;
-            border-left: 6px solid #e5533d;
-            border-radius: 28px;
-            padding: 1rem 1.5rem;
-            margin-bottom: 1.8rem;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .pricing-alert .free-badge {
-            background: #2c3e50;
-            color: white;
-            padding: 0.2rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-bottom: 0.6rem;
-        }
-
-        .pricing-alert p {
-            margin: 0.2rem 0;
-            color: #2c3e50;
-        }
-
-        .pricing-alert .price-tag {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #e5533d;
-        }
-
         .callout {
             background: #f9f1e6;
             border-radius: 28px;
             padding: 1.2rem 1.5rem;
             margin-bottom: 2rem;
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+            text-align: center;
         }
 
         .callout p {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             line-height: 1.45;
             color: #2c3e50;
             margin-bottom: 0.5rem;
@@ -135,7 +105,7 @@
             width: 100%;
             max-width: 260px;
             display: block;
-            margin: 0 auto 1.2rem auto;
+            margin: 0 auto 1.5rem auto;
             box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
             letter-spacing: 1px;
         }
@@ -170,7 +140,7 @@
         }
 
         .iching-result .hexagram-name {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 800;
             color: #e5533d;
             margin-top: 0.2rem;
@@ -178,8 +148,9 @@
 
         .iching-result .explanation {
             color: #4a5568;
-            line-height: 1.5;
+            line-height: 1.6;
             margin-top: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .iching-result hr {
@@ -190,11 +161,15 @@
 
         .footer-note {
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #8a99aa;
-            margin-top: 1.8rem;
+            margin-top: 2rem;
             border-top: 1px solid #eef2f6;
             padding-top: 1.2rem;
+        }
+
+        .footer-note p {
+            margin: 0.2rem 0;
         }
 
         @media (max-width: 550px) {
@@ -213,103 +188,101 @@
 <body>
 <div class="iching-container">
     <div class="hero">
-        <h1>⚡ I Ching · Live Oracle</h1>
-        <div class="badge">✨ changes every minute ✨</div>
-    </div>
-
-    <!-- 醒目收费提示 -->
-    <div class="pricing-alert">
-        <div class="free-badge">🎁 FIRST READING FREE</div>
-        <p>✅ <strong>1 free try per person</strong> (no sign‑up, no email)</p>
-        <p>💰 Additional readings: <span class="price-tag">$2.99 each</span> or <strong>unlock unlimited</strong> for $9.99</p>
-        <p style="font-size:0.85rem; margin-top:6px;">⬇️ After your first prediction, you will be asked to pay.</p>
+        <h1>⚡ I Ching · Ancient Oracle</h1>
+        <div class="badge">✨ Ancient divine wisdom · High accuracy · Trusted for millennia ✨</div>
     </div>
 
     <div class="callout">
-        <p><span class="highlight">🔮 UNIQUE EVERY MINUTE</span> – Based on exact year, month, day, hour and <strong>minute</strong>. No repeats.</p>
-        <p>⚡ <strong>Try it now – your free oracle is waiting.</strong> Second try requires payment (demo limitation).</p>
+        <p><span class="highlight">🔮 PREDICT YOUR FATE</span> – Based on the timeless I Ching (Book of Changes) and the alchemical secrets of the <strong>Zhouyi Cantong Qi</strong>.</p>
+        <p>⚡ <strong>One free reading per person.</strong> Click below and receive your personalized hexagram.</p>
     </div>
 
     <button id="getIChingBtn">✨ PREDICT ✨</button>
     <div id="ichingResult" class="iching-result" style="display: none;"></div>
+
     <div class="footer-note">
-        ⏳ Time-based I Ching | Yi Jing | Book of Changes | 1 free attempt only
+        <p>🎁 First reading is <strong>free</strong> (one per person).</p>
+        <p>💎 Additional readings: $2.99 each · Unlimited: $9.99 (coming soon).</p>
+        <p>🌙 This is a demo — no real payment required.</p>
     </div>
 </div>
 
 <script>
-// ---------- 64 Hexagrams data (unchanged) ----------
+// --------------------------------------------------------------
+// 64 Hexagrams (upper, lower) -> English name (only English word) and detailed explanation
+// incorporating Zhouyi Cantong Qi (The Seal of the Unity of the Three) alchemical wisdom.
+// --------------------------------------------------------------
 const iChingMap = {
-  "1,1": { name: "Qian (Heaven)", explanation: "Creative, strong, and persevering. Great success through initiative and virtue." },
-  "1,2": { name: "Tian Lu (Treading)", explanation: "Careful conduct. Even treading on a tiger's tail, one remains unharmed if acting with propriety." },
-  "1,3": { name: "Tian Huo Tong Ren (Fellowship)", explanation: "Harmony among people. Cooperation brings success and mutual benefit." },
-  "1,4": { name: "Tian Lei Wu Wang (Innocence)", explanation: "Act without deceit. Follow the natural way; avoid reckless action." },
-  "1,5": { name: "Tian Feng Gou (Encounter)", explanation: "Unexpected meeting. Beware of hidden influences; stay cautious." },
-  "1,6": { name: "Tian Shui Song (Conflict)", explanation: "Dispute arises. Seek mediation; avoid escalating conflicts." },
-  "1,7": { name: "Tian Shan Dun (Retreat)", explanation: "Withdraw temporarily. Preserve strength; wait for better timing." },
-  "1,8": { name: "Tian Di Pi (Standstill)", explanation: "Obstruction and stagnation. The superior person remains humble and avoids entanglement." },
-  "2,1": { name: "Ze Tian Guai (Breakthrough)", explanation: "Decisive action. Remove obstacles and negative influences with resolve." },
-  "2,2": { name: "Dui (Joy)", explanation: "Joyful interaction. Pleasant communication but avoid gossip." },
-  "2,3": { name: "Ze Huo Ge (Revolution)", explanation: "Radical change. Shed the old and embrace the new; timely reform." },
-  "2,4": { name: "Ze Lei Sui (Following)", explanation: "Adapt and follow. Yield to the flow of circumstances for success." },
-  "2,5": { name: "Ze Feng Da Guo (Excess)", explanation: "Critical mass. The burden is heavy; you must stand alone with integrity." },
-  "2,6": { name: "Ze Shui Kun (Exhaustion)", explanation: "Difficulties press. Endure patiently; help will arrive." },
-  "2,7": { name: "Ze Shan Xian (Influence)", explanation: "Mutual attraction. Feelings and relationships flourish." },
-  "2,8": { name: "Ze Di Cui (Gathering)", explanation: "Assembly of talents. Unity and collective strength prevail." },
-  "3,1": { name: "Huo Tian Da You (Great Possession)", explanation: "Abundance and prosperity. Possess great wealth through virtue." },
-  "3,2": { name: "Huo Ze Kui (Divergence)", explanation: "Estrangement. Seek common ground despite differences." },
-  "3,3": { name: "Li (Radiance)", explanation: "Dependence on brightness. Clarity and civilized behavior bring benefit." },
-  "3,4": { name: "Huo Lei Shi Ke (Biting Through)", explanation: "Remove obstructions. Law and punishment may be needed." },
-  "3,5": { name: "Huo Feng Ding (Cauldron)", explanation: "Nourishing the wise. Reform and cultivate talent." },
-  "3,6": { name: "Huo Shui Wei Ji (Before Completion)", explanation: "Not yet finished. Cross with caution; success requires continued effort." },
-  "3,7": { name: "Huo Shan Lu (The Wanderer)", explanation: "Travel and transience. Be humble and adaptable when away from home." },
-  "3,8": { name: "Huo Di Jin (Progress)", explanation: "Advancement with radiance. Shine openly; rise step by step." },
-  "4,1": { name: "Lei Tian Da Zhuang (Great Power)", explanation: "Strength and vigor. Use power justly; avoid excess." },
-  "4,2": { name: "Lei Ze Gui Mei (Marrying Maiden)", explanation: "Improper union. Beware of ill-matched alliances." },
-  "4,3": { name: "Lei Huo Feng (Fullness)", explanation: "Abundance at its peak. Enjoy but know decline will follow." },
-  "4,4": { name: "Zhen (Shock)", explanation: "Thunderous upheaval. Remain calm; face crisis with courage." },
-  "4,5": { name: "Lei Feng Heng (Duration)", explanation: "Persistence and constancy. Success through enduring effort." },
-  "4,6": { name: "Lei Shui Jie (Deliverance)", explanation: "Liberation from trouble. Act decisively to escape danger." },
-  "4,7": { name: "Lei Shan Xiao Guo (Small Excess)", explanation: "Minor overstepping. Be careful; small mistakes can accumulate." },
-  "4,8": { name: "Lei Di Yu (Enthusiasm)", explanation: "Joy and excitement. Plan well and lead others happily." },
-  "5,1": { name: "Feng Tian Xiao Chu (Small Harvest)", explanation: "Accumulating modestly. A little gain; prepare for future growth." },
-  "5,2": { name: "Feng Ze Zhong Fu (Inner Truth)", explanation: "Sincerity moves all. Even pigs and fish are touched by genuine trust." },
-  "5,3": { name: "Feng Huo Jia Ren (Family)", explanation: "Nurturing the household. Harmony starts at home." },
-  "5,4": { name: "Feng Lei Yi (Increase)", explanation: "Benefit and expansion. Gain through generosity and giving." },
-  "5,5": { name: "Xun (Gentle Penetration)", explanation: "Gradual influence. Softness succeeds where force fails." },
-  "5,6": { name: "Feng Shui Huan (Dispersion)", explanation: "Scattering and renewal. Disband old patterns to regroup." },
-  "5,7": { name: "Feng Shan Jian (Gradual Progress)", explanation: "Slow but steady. The maiden marries in good time." },
-  "5,8": { name: "Feng Di Guan (Contemplation)", explanation: "Observe and reflect. Learn from the wise without prejudice." },
-  "6,1": { name: "Shui Tian Xu (Waiting)", explanation: "Patience brings success. Do not rush; the time is not yet ripe." },
-  "6,2": { name: "Shui Ze Jie (Restriction)", explanation: "Discipline and moderation. Excessive limitation is harmful." },
-  "6,3": { name: "Shui Huo Ji Ji (Already Completed)", explanation: "Order after chaos. Maintain vigilance; do not become complacent." },
-  "6,4": { name: "Shui Lei Tun (Beginnings)", explanation: "Difficulty at the start. Build foundations; help is needed." },
-  "6,5": { name: "Shui Feng Jing (The Well)", explanation: "Nourishment without change. Stable support for the community." },
-  "6,6": { name: "Kan (The Abyss)", explanation: "Danger repeated. Stay sincere and cautious; you will overcome." },
-  "6,7": { name: "Shui Shan Jian (Obstruction)", explanation: "Hardship ahead. Turn back or seek help; avoid direct assault." },
-  "6,8": { name: "Shui Di Bi (Union)", explanation: "Alignment with others. Support and togetherness bring good fortune." },
-  "7,1": { name: "Shan Tian Da Chu (Great Accumulation)", explanation: "Store up strength. Prepare for future challenges." },
-  "7,2": { name: "Shan Ze Sun (Decrease)", explanation: "Sacrifice for a greater cause. Loss now leads to gain later." },
-  "7,3": { name: "Shan Huo Bi (Adornment)", explanation: "Elegance and decoration. Substance is more important than surface." },
-  "7,4": { name: "Shan Lei Yi (Nourishment)", explanation: "Provide for oneself. Speak truthfully; seek proper nourishment." },
-  "7,5": { name: "Shan Feng Gu (Corruption)", explanation: "Rottenness and remedy. Reform from within." },
-  "7,6": { name: "Shan Shui Meng (Youthful Folly)", explanation: "Immaturity and inexperience. Seek guidance from a teacher." },
-  "7,7": { name: "Gen (Mountain)", explanation: "Stillness and meditation. Stop when appropriate; rest." },
-  "7,8": { name: "Shan Di Bo (Falling)", explanation: "Collapse and decay. The inferior rise; the superior retreat." },
-  "8,1": { name: "Di Tian Tai (Peace)", explanation: "Harmonious flow. Small goes out, great comes in; everything is smooth." },
-  "8,2": { name: "Di Ze Lin (Approach)", explanation: "Supervision and leadership. Approach others with goodwill." },
-  "8,3": { name: "Di Huo Ming Yi (Darkening of Light)", explanation: "Injury and hiding. The wise endure hardship without despair." },
-  "8,4": { name: "Di Lei Fu (Return)", explanation: "Cyclical renewal. The turning point; good fortune returns." },
-  "8,5": { name: "Di Feng Sheng (Ascending)", explanation: "Rising step by step. Steady progress leads to success." },
-  "8,6": { name: "Di Shui Shi (The Army)", explanation: "Discipline and leadership. Mobilize resources wisely." },
-  "8,7": { name: "Di Shan Qian (Modesty)", explanation: "Humble and self-effacing. Great fortune for the modest." },
-  "8,8": { name: "Kun (The Receptive)", explanation: "Yielding and supportive. Endure with strength; embrace the earth's virtue." }
+  "1,1": { name: "Heaven", explanation: "The Creative. Pure Yang, infinite potential. Like the unceasing movement of the heavens, you are called to act with strength, creativity, and integrity. In Cantong Qi, this corresponds to the primordial Qi — the source of all transformation. Perseverance brings great success." },
+  "1,2": { name: "Treading", explanation: "Careful conduct. Walking upon the tiger's tail without being bitten. This hexagram advises caution and proper behavior in delicate situations. In alchemical terms, it represents the careful handling of internal energies — one step at a time avoids disaster." },
+  "1,3": { name: "Fellowship", explanation: "Harmony among people. Cooperation and mutual understanding are key. Just as mercury and lead unite in the alchemical crucible, so should you seek union with like-minded souls. Success comes through open communication." },
+  "1,4": { name: "Innocence", explanation: "Act without deceit. The pure, uncarved block. Follow the natural way without scheming. In Cantong Qi, this is the state of 'original nature' before worldly desires cloud the mind. Avoid reckless action; spontaneity brings fortune." },
+  "1,5": { name: "Encounter", explanation: "Unexpected meeting. A powerful but potentially disruptive force enters your life. Be cautious of hidden influences. In alchemy, this is the sudden appearance of the 'guest' — a catalyst that can either refine or ruin your practice." },
+  "1,6": { name: "Conflict", explanation: "Dispute and litigation. Inner or outer tension arises. Seek mediation and avoid escalation. The Cantong Qi warns that conflict dissipates vital energy — better to yield temporarily than to engage in futile struggle." },
+  "1,7": { name: "Retreat", explanation: "Withdraw temporarily. Preserve your strength for a better time. Like a wise alchemist who knows when to let the elixir simmer undisturbed, you should step back and observe. Not a sign of weakness but of strategic patience." },
+  "1,8": { name: "Standstill", explanation: "Obstruction and stagnation. The superior person remains humble and avoids entanglement. In the alchemical process, this is the 'dark night' before the gold crystallizes. Do not force movement; cultivate inner stillness." },
+  "2,1": { name: "Breakthrough", explanation: "Decisive action. Removing obstacles with determination. The time has come to cut through illusions and false attachments. As the Cantong Qi says, 'When the vessel is full, pour it out' — make room for the new by decisively discarding the old." },
+  "2,2": { name: "Joy", explanation: "Pleasant interaction. Joyful communication but beware of shallow gossip. True joy arises from the harmony of yin and yang within. In alchemy, this is the 'merging of breaths' — a lighthearted yet profound exchange of energies." },
+  "2,3": { name: "Revolution", explanation: "Radical change. The old skin must be shed. Timing is crucial: change when the time is ripe. This hexagram echoes the alchemical principle of 'death and rebirth' — the lead must die for gold to be born." },
+  "2,4": { name: "Following", explanation: "Adapt and flow. Yield to the greater currents of life. Not passive submission, but wise alignment. In Cantong Qi, this is the 'wu wei' of internal alchemy — effortless action that follows the Tao." },
+  "2,5": { name: "Excess", explanation: "Critical mass. The burden is heavy; you must stand alone with integrity. Like a cauldron filled to the brim, any extra drop will cause overflow. Do not add more — instead, allow the process to complete naturally." },
+  "2,6": { name: "Exhaustion", explanation: "Difficulties press from all sides. Endure patiently; help will come. The alchemist knows that the darkest hour precedes the dawn. Conserve your energy, do not waste it on resistance. Trust in the cycle of change." },
+  "2,7": { name: "Influence", explanation: "Mutual attraction. Feelings and relationships flourish naturally. This is the magnetic pull between yin and yang. In the Cantong Qi, it is the 'union of opposites' — the foundation of all creation." },
+  "2,8": { name: "Gathering", explanation: "Assembly of talents. Unity and collective strength prevail. Like minerals gathering in the earth to form ore, you are called to bring people together for a common purpose. Shared wisdom amplifies power." },
+  "3,1": { name: "Great Possession", explanation: "Abundance and prosperity. Possess great wealth through virtue, not greed. The alchemist who has refined the elixir does not hoard it but shares it. Your harvest is bountiful — use it wisely." },
+  "3,2": { name: "Divergence", explanation: "Estrangement and opposition. Seek common ground despite differences. In the alchemical process, sometimes ingredients resist blending — gentle heat and patience are required. Do not force unity." },
+  "3,3": { name: "Radiance", explanation: "Dependence on brightness. Clarity and civilized behavior bring benefit. Like a lamp that needs oil, you must maintain your inner light through practice. Cantong Qi: 'The sun and moon shine without cease' — so should your spirit." },
+  "3,4": { name: "Biting Through", explanation: "Remove obstructions. Law and punishment may be needed to break through rigidity. A decisive bite to separate truth from falsehood. In alchemy, this is the 'cracking of the shell' to reveal the kernel." },
+  "3,5": { name: "Cauldron", explanation: "Nourishing the wise. Reform and cultivate talent. The alchemical vessel (ding) transforms base materials into gold. Similarly, your environment and relationships are the crucible for your growth. Feed them well." },
+  "3,6": { name: "Before Completion", explanation: "Not yet finished. Cross with caution; success requires continued effort. The elixir is almost ready but not yet stable. One last step — but do not rush. Check every detail." },
+  "3,7": { name: "The Wanderer", explanation: "Travel and transience. Be humble and adaptable when away from home. Like a wandering alchemist seeking the master, you are in a transitional phase. Stay light, observe, and learn." },
+  "3,8": { name: "Progress", explanation: "Advancement with radiance. Rise step by step, like the sun climbing the sky. The Cantong Qi says: 'The great light illuminates the four directions.' Your efforts are now visible to all." },
+  "4,1": { name: "Great Power", explanation: "Strength and vigor. Use power justly; avoid excess. The alchemist's fire must be carefully regulated — too much burns the vessel. Harness your energy with discipline and purpose." },
+  "4,2": { name: "Marrying Maiden", explanation: "Improper union. Beware of ill-matched alliances. Not every combination leads to gold. Some mixtures produce only slag. Examine your partnerships and commitments carefully." },
+  "4,3": { name: "Fullness", explanation: "Abundance at its peak. Enjoy but know decline will follow. The moon wanes after it waxes. Do not cling to peak experience; prepare for the inevitable descent with equanimity." },
+  "4,4": { name: "Shock", explanation: "Thunderous upheaval. Remain calm; face crisis with courage. Like an earthquake that shakes the alchemical vessel, disturbance can be a catalyst for transformation. Do not panic — let the shock realign you." },
+  "4,5": { name: "Duration", explanation: "Persistence and constancy. Success through enduring effort. The elixir requires long, steady heat. Small, consistent actions over time yield the greatest results." },
+  "4,6": { name: "Deliverance", explanation: "Liberation from trouble. Act decisively to escape danger. The cage door has opened — but you must step through. Take the opportunity to free yourself from old patterns." },
+  "4,7": { name: "Small Excess", explanation: "Minor overstepping. Be careful; small mistakes can accumulate. Like a tiny impurity in the alchemical mixture, a small error can spoil the whole work. Attend to details." },
+  "4,8": { name: "Enthusiasm", explanation: "Joy and excitement. Plan well and lead others happily. Good times are here, but don't let exuberance cloud judgment. The Cantong Qi advises: 'When joy arises, the work is half done — but not yet finished.'" },
+  "5,1": { name: "Small Harvest", explanation: "Accumulating modestly. A little gain; prepare for future growth. Like gathering herbs for the elixir, each small addition contributes to the final product. Be patient and persistent." },
+  "5,2": { name: "Inner Truth", explanation: "Sincerity moves all. Even pigs and fish are touched by genuine trust. The alchemist's most powerful ingredient is integrity. When you are true, the universe responds." },
+  "5,3": { name: "Family", explanation: "Nurturing the household. Harmony starts at home. Before you can refine the external world, you must balance the internal. Tend to your immediate environment with care." },
+  "5,4": { name: "Increase", explanation: "Benefit and expansion. Gain through generosity and giving. The more you share your abundance, the more returns to you. This is the alchemical principle of 'loss leading to gain'." },
+  "5,5": { name: "Gentle Penetration", explanation: "Gradual influence. Softness succeeds where force fails. Like wind eroding a mountain, small persistent actions create change. Do not push; infiltrate gently." },
+  "5,6": { name: "Dispersion", explanation: "Scattering and renewal. Disband old patterns to regroup. Sometimes the elixir must be dissolved and recombined. Let go of outworn structures to allow new ones to form." },
+  "5,7": { name: "Gradual Progress", explanation: "Slow but steady. The maiden marries in good time. Do not rush the process; each step has its season. The Cantong Qi compares this to the slow turning of the seasons — inevitable and perfect." },
+  "5,8": { name: "Contemplation", explanation: "Observe and reflect. Learn from the wise without prejudice. Before you act, see clearly. Like an alchemist watching the color changes in the crucible, know when to intervene and when to wait." },
+  "6,1": { name: "Waiting", explanation: "Patience brings success. Do not rush; the time is not yet ripe. The alchemical fire must be just right — not too hot, not too cold. Cultivate the art of expectant waiting." },
+  "6,2": { name: "Restriction", explanation: "Discipline and moderation. Excessive limitation is harmful. The alchemical vessel needs a lid but not too tight. Find the balance between control and freedom." },
+  "6,3": { name: "Already Completed", explanation: "Order after chaos. Maintain vigilance; do not become complacent. The elixir is ready, but one careless moment can ruin it. Celebrate but remain attentive." },
+  "6,4": { name: "Beginnings", explanation: "Difficulty at the start. Build foundations; help is needed. Every great work begins with struggle. Seek a teacher or ally to guide you through the initial confusion." },
+  "6,5": { name: "The Well", explanation: "Nourishment without change. Stable support for the community. Like an inexhaustible well, your inner resources can serve others. Keep your source clean and accessible." },
+  "6,6": { name: "The Abyss", explanation: "Danger repeated. Stay sincere and cautious; you will overcome. Water flowing over water — the same peril again and again. In Cantong Qi, this is the 'testing of the elixir' — each trial refines you further." },
+  "6,7": { name: "Obstruction", explanation: "Hardship ahead. Turn back or seek help; avoid direct assault. Mountains and rivers block the path. Do not charge blindly; find a guide or a different route." },
+  "6,8": { name: "Union", explanation: "Alignment with others. Support and togetherness bring good fortune. Like the joining of mercury and sulfur, partnership creates something greater than the sum of its parts." },
+  "7,1": { name: "Great Accumulation", explanation: "Store up strength. Prepare for future challenges. The alchemist gathers rare herbs over many years. Your current efforts are building a reservoir for tomorrow." },
+  "7,2": { name: "Decrease", explanation: "Sacrifice for a greater cause. Loss now leads to gain later. Sometimes you must let go of a lesser treasure to obtain a greater one. Trust the process of diminishment." },
+  "7,3": { name: "Adornment", explanation: "Elegance and decoration. Substance is more important than surface. Do not be fooled by external beauty; the true value lies within. In alchemy, the outer form mirrors the inner essence." },
+  "7,4": { name: "Nourishment", explanation: "Provide for oneself. Speak truthfully; seek proper nourishment. Feed your body, mind, and spirit with what is pure and vital. The Cantong Qi says: 'The mouth is the gateway of life and death' — choose carefully." },
+  "7,5": { name: "Corruption", explanation: "Rottenness and remedy. Reform from within. When decay sets in, you must root out the cause. This is the 'cleansing fire' that purifies the vessel before a new operation." },
+  "7,6": { name: "Youthful Folly", explanation: "Immaturity and inexperience. Seek guidance from a teacher. Do not act on half-knowledge. Find a wise master who has walked the path before you." },
+  "7,7": { name: "Mountain", explanation: "Stillness and meditation. Stop when appropriate; rest. The great mountain stands unmoved. Sometimes the most powerful action is non-action. Let your mind settle like sediment in still water." },
+  "7,8": { name: "Falling", explanation: "Collapse and decay. The inferior rise; the superior retreat. Like a cliff crumbling into the sea, what is unsustainable must fall. Do not cling; let go and seek higher ground." },
+  "8,1": { name: "Peace", explanation: "Harmonious flow. Small goes out, great comes in; everything is smooth. The alchemical crucible is at perfect temperature — the elixir brews effortlessly. Enjoy this rare moment of balance." },
+  "8,2": { name: "Approach", explanation: "Supervision and leadership. Approach others with goodwill. The sage guides without dominating. Lead by example, not by force." },
+  "8,3": { name: "Darkening of Light", explanation: "Injury and hiding. The wise endure hardship without despair. When the sun is eclipsed, it does not lose its essence — it waits. Your light may be hidden but not extinguished." },
+  "8,4": { name: "Return", explanation: "Cyclical renewal. The turning point; good fortune returns. After darkness, dawn. The elixir that seemed lost has begun to form again. Celebrate the return of hope." },
+  "8,5": { name: "Ascending", explanation: "Rising step by step. Steady progress leads to success. Like a tree growing toward the sky, your efforts are lifting you. Do not look down." },
+  "8,6": { name: "The Army", explanation: "Discipline and leadership. Mobilize resources wisely. A well-organized force can overcome any obstacle. Gather your resources and act with unity of purpose." },
+  "8,7": { name: "Modesty", explanation: "Humble and self-effacing. Great fortune for the modest. The mountain conceals its height. True power does not boast. In Cantong Qi, humility is the key that unlocks the hidden chambers of alchemy." },
+  "8,8": { name: "The Receptive", explanation: "Yielding and supportive. Endure with strength; embrace the earth's virtue. Like the earth receiving seeds, you are called to nurture and sustain. Not passive, but powerfully receptive." }
 };
 
 function getHexagramInfo(upper, lower) {
   const key = `${upper},${lower}`;
   if (iChingMap[key]) return iChingMap[key];
-  return { name: `Hexagram ${upper}${lower}`, explanation: "No detailed interpretation yet. Reflect on the interaction of the upper and lower trigrams." };
+  return { name: `Hexagram ${upper}${lower}`, explanation: "Ancient wisdom speaks — reflect on your situation with a calm heart." };
 }
 
 function getHourNumber(hour) {
@@ -319,14 +292,14 @@ function getHourNumber(hour) {
 
 function flipBitInTrigram(trigramNum, linePos) {
   const trigramBits = {
-    1: [1,1,1],
-    2: [1,1,0],
-    3: [1,0,1],
-    4: [1,0,0],
-    5: [0,1,1],
-    6: [0,1,0],
-    7: [0,0,1],
-    8: [0,0,0]
+    1: [1,1,1], // Qian
+    2: [1,1,0], // Dui
+    3: [1,0,1], // Li
+    4: [1,0,0], // Zhen
+    5: [0,1,1], // Xun
+    6: [0,1,0], // Kan
+    7: [0,0,1], // Gen
+    8: [0,0,0]  // Kun
   };
   const bits = [...trigramBits[trigramNum]];
   bits[linePos] = 1 - bits[linePos];
@@ -366,6 +339,7 @@ function getIChing() {
   const originalHex = getHexagramInfo(upper, lower);
   const changedHex = getHexagramInfo(newUpper, newLower);
   const yaoName = ["bottom", "second", "third", "fourth", "fifth", "top"][moving-1];
+
   return {
     original: originalHex,
     changed: changedHex,
@@ -374,7 +348,7 @@ function getIChing() {
   };
 }
 
-// ---------- 限制免费次数的逻辑 ----------
+// ---------- 免费次数限制 ----------
 const FREE_TRIAL_KEY = 'iching_free_used';
 
 function hasUsedFreeTrial() {
@@ -392,9 +366,9 @@ function showPaymentPrompt() {
     <div class="section">
       <div class="section-title">⛔ Free trial already used</div>
       <div class="explanation">
-        <p>You've already claimed your <strong>one free prediction</strong>. To continue using the I Ching Oracle, please support the project.</p>
-        <p>💳 <strong>Pay $2.99 for a single reading</strong> or <strong>$9.99 for unlimited access</strong> (coming soon).</p>
-        <p style="margin-top:12px;">🔜 For demo purposes, you can <button id="demoResetBtn" style="background:#e5533d; color:white; border:none; padding:6px 12px; border-radius:30px; cursor:pointer;">Reset demo cache</button> to test again (this button will not appear in real paid version).</p>
+        <p>You have already claimed your <strong>one free prediction</strong>. To continue using the I Ching Oracle, please support the project.</p>
+        <p>💳 <strong>$2.99 per additional reading</strong> or <strong>$9.99 for unlimited access</strong> (coming soon).</p>
+        <p>🔜 For demo purposes, you can <button id="demoResetBtn" style="background:#e5533d; color:white; border:none; padding:6px 12px; border-radius:30px; cursor:pointer;">Reset demo cache</button> to test again.</p>
       </div>
     </div>
   `;
@@ -408,32 +382,29 @@ function showPaymentPrompt() {
 }
 
 function showResult() {
-  // 检查是否已经使用过免费次数
   if (hasUsedFreeTrial()) {
     showPaymentPrompt();
     return;
   }
   
-  // 第一次使用：显示预测结果并标记已使用
   const res = getIChing();
   const resultDiv = document.getElementById('ichingResult');
   resultDiv.style.display = 'block';
   resultDiv.innerHTML = `
     <div class="section">
-      <div class="section-title">✨ What's the condition you're experiencing now</div>
+      <div class="section-title">✨ What you are experiencing now</div>
       <div class="hexagram-name">${res.original.name}</div>
       <div class="explanation">${res.original.explanation}</div>
     </div>
     <div class="section">
-      <div class="section-title">🔮 What's the condition you'll experience in the future</div>
+      <div class="section-title">🔮 What you will experience in the future</div>
       <div class="hexagram-name">${res.changed.name}</div>
       <div class="explanation">${res.changed.explanation}</div>
     </div>
     <hr>
-    <p style="font-size:0.8rem; color:#888;">⚡ Live reading · ${res.date} · Changing line: ${res.movingYao}</p>
+    <p style="font-size:0.8rem; color:#888;">⚡ Reading time: ${res.date} · Changing line: ${res.movingYao}</p>
     <p style="font-size:0.8rem; margin-top:8px; background:#fff1e0; padding:8px; border-radius:20px;">🎁 This was your <strong>free prediction</strong>. Next time you will be asked to pay.</p>
   `;
-  
   markFreeTrialUsed();
 }
 
