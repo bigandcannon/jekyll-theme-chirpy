@@ -245,6 +245,7 @@
             }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 <div class="iching-container">
@@ -265,7 +266,7 @@
     <div id="paypalSection" class="paypal-container" style="display: none;">
         <div class="payment-title">✨ Unlock Your Next Reading</div>
         <div class="payment-desc">You have used your free reading. Purchase now to continue your journey with the I Ching.</div>
-        
+
         <form action="https://www.paypal.com/ncp/payment/C75UW7FXGBRKA" method="post" target="_blank" class="paypal-form" onsubmit="handlePayPalPayment()">
             <input class="pp-C75UW7FXGBRKA" type="submit" value="立即购买 / Buy Now - $2.99" />
             <div class="paypal-cards">
@@ -273,9 +274,9 @@
             </div>
             <section class="paypal-support"> 技术支持提供方： <img src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg" alt="paypal"/></section>
         </form>
-        
+
         <div style="margin-top: 1rem; font-size: 0.8rem; color: #888;">
-            <p>🔓 After payment, you can use PREDICT again</p>
+            <p>🔓 After payment, you can use PREDICT one more time</p>
         </div>
     </div>
 
@@ -427,30 +428,34 @@ function getIChing() {
   };
 }
 
-// ---------- 付费次数限制 ----------
+// ---------- 状态管理 ----------
 const FREE_TRIAL_KEY = 'iching_free_used';
-const PAID_ACCESS_KEY = 'iching_paid_access';
+const PAID_CREDIT_KEY = 'iching_paid_credit'; // 付费后获得的一次使用额度
 
 function hasUsedFreeTrial() {
   return localStorage.getItem(FREE_TRIAL_KEY) === 'true';
 }
 
-function hasPaidAccess() {
-  return localStorage.getItem(PAID_ACCESS_KEY) === 'true';
+function hasPaidCredit() {
+  return localStorage.getItem(PAID_CREDIT_KEY) === 'true';
 }
 
 function markFreeTrialUsed() {
   localStorage.setItem(FREE_TRIAL_KEY, 'true');
 }
 
-function unlockPaidAccess() {
-  localStorage.setItem(PAID_ACCESS_KEY, 'true');
+function addPaidCredit() {
+  localStorage.setItem(PAID_CREDIT_KEY, 'true');
+}
+
+function consumePaidCredit() {
+  localStorage.removeItem(PAID_CREDIT_KEY);
 }
 
 function showPaymentPrompt() {
   const resultDiv = document.getElementById('ichingResult');
   const paypalSection = document.getElementById('paypalSection');
-  
+
   resultDiv.style.display = 'block';
   resultDiv.innerHTML = `
     <div class="section">
@@ -461,10 +466,10 @@ function showPaymentPrompt() {
       </div>
     </div>
   `;
-  
+
   // 显示PayPal付费按钮
   paypalSection.style.display = 'block';
-  
+
   // 隐藏PREDICT按钮
   const btn = document.getElementById('getIChingBtn');
   if (btn) {
@@ -473,19 +478,25 @@ function showPaymentPrompt() {
 }
 
 function showResult() {
-  // 检查是否已付费或还未使用免费次数
-  if (hasUsedFreeTrial() && !hasPaidAccess()) {
+  // 检查是否有使用资格：未用过免费次数，或者有付费额度
+  const canUseFree = !hasUsedFreeTrial();
+  const canUsePaid = hasPaidCredit();
+
+  if (!canUseFree && !canUsePaid) {
     showPaymentPrompt();
     return;
   }
-  
+
   const res = getIChing();
   const resultDiv = document.getElementById('ichingResult');
   const paypalSection = document.getElementById('paypalSection');
-  
+
   resultDiv.style.display = 'block';
   paypalSection.style.display = 'none';
-  
+
+  // 判断这次是免费使用还是付费使用
+  const isFreeUse = !hasUsedFreeTrial();
+
   resultDiv.innerHTML = `
     <div class="section">
       <div class="section-title"> What you are experiencing now</div>
@@ -499,32 +510,40 @@ function showResult() {
     </div>
     <hr>
     <p style="font-size:0.8rem; color:#888;"> Reading time: ${res.date} · Changing line: ${res.movingYao}</p>
-    ${!hasPaidAccess() ? `<p style="font-size:0.8rem; margin-top:8px; background:#fff1e0; padding:8px; border-radius:20px;"> This was your <strong>free prediction</strong>. Next time you will be asked to pay.</p>` : ''}
+    ${isFreeUse 
+      ? `<p style="font-size:0.8rem; margin-top:8px; background:#fff1e0; padding:8px; border-radius:20px;"> This was your <strong>free prediction</strong>. Next time you will be asked to pay $2.99.</p>`
+      : `<p style="font-size:0.8rem; margin-top:8px; background:#e8f5e9; padding:8px; border-radius:20px;"> ✅ <strong>Paid reading completed.</strong> Thank you for your support! Want another? Pay $2.99 again.</p>`
+    }
   `;
-  
-  if (!hasUsedFreeTrial()) {
+
+  if (isFreeUse) {
+    // 第一次：标记免费已用
     markFreeTrialUsed();
+  } else {
+    // 付费使用：消耗额度
+    consumePaidCredit();
   }
+
+  // 使用后立即隐藏PREDICT按钮，显示付费按钮
+  const btn = document.getElementById('getIChingBtn');
+  if (btn) {
+    btn.style.display = 'none';
+  }
+  paypalSection.style.display = 'block';
 }
 
 // 处理PayPal支付按钮点击
 function handlePayPalPayment() {
-  // 模拟支付成功（实际项目中，这里应该通过PayPal回调验证支付）
-  // 由于PayPal NCP按钮会在新窗口打开，用户完成支付后需要返回页面
-  // 这里使用setTimeout模拟支付完成后的解锁
-  setTimeout(() => {
-    unlockPaidAccess();
-    // 刷新页面以显示PREDICT按钮
-    location.reload();
-  }, 3000);
+  // 标记已获得付费额度
+  addPaidCredit();
 }
 
 // 检查URL参数，看是否从PayPal返回
 function checkPayPalReturn() {
   const urlParams = new URLSearchParams(window.location.search);
-  // PayPal可能会返回一些参数，这里可以根据实际情况调整
   if (urlParams.has('payment_status') || urlParams.has('tx')) {
-    unlockPaidAccess();
+    // 从PayPal返回，添加付费额度
+    addPaidCredit();
     // 清除URL参数
     window.history.replaceState({}, document.title, window.location.pathname);
     return true;
@@ -535,31 +554,36 @@ function checkPayPalReturn() {
 document.addEventListener('DOMContentLoaded', function() {
   // 检查是否从PayPal返回
   const returnedFromPayPal = checkPayPalReturn();
-  
+
   const btn = document.getElementById('getIChingBtn');
   const paypalSection = document.getElementById('paypalSection');
-  
+  const resultDiv = document.getElementById('ichingResult');
+
+  // 判断当前状态
+  const freeUsed = hasUsedFreeTrial();
+  const hasCredit = hasPaidCredit();
+
   if (btn) {
-    // 如果已经用过免费次数且未付费，显示付费界面
-    if (hasUsedFreeTrial() && !hasPaidAccess()) {
+    if (freeUsed && !hasCredit) {
+      // 免费已用，且没有付费额度：隐藏PREDICT，显示PayPal
       btn.style.display = 'none';
       paypalSection.style.display = 'block';
     } else {
+      // 有免费次数或有付费额度：显示PREDICT，隐藏PayPal
+      btn.style.display = 'block';
       btn.addEventListener('click', showResult);
+      paypalSection.style.display = 'none';
     }
-  } else {
-    console.error("Button not found");
   }
-  
+
   // 如果从PayPal返回且已解锁，显示成功消息
-  if (returnedFromPayPal && hasPaidAccess()) {
-    const resultDiv = document.getElementById('ichingResult');
+  if (returnedFromPayPal && hasCredit) {
     resultDiv.style.display = 'block';
     resultDiv.innerHTML = `
       <div class="section">
         <div class="section-title" style="color: #27ae60;">✅ Payment Successful!</div>
         <div class="explanation">
-          <p>Thank you for your support! You can now use the I Ching Oracle again.</p>
+          <p>Thank you for your support! You have unlocked <strong>one reading</strong>.</p>
           <p>Click the <strong>PREDICT</strong> button below to receive your reading.</p>
         </div>
       </div>
