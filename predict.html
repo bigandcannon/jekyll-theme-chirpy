@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAzgbmevProXDZN1F903cQGKW_U-vqztdvcxAY0ct7560OXd8I28VV6JOMbx9KYcoR82XA0gVO2cuVKic&components=hosted-buttons&disable-funding=venmo&currency=USD">
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I Ching · Ancient Oracle</title>
@@ -20,6 +23,12 @@
             font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
             padding: 1.5rem;
         }
+      <div id="paypal-container-C75UW7FXGBRKA"></div>
+<script>
+  paypal.HostedButtons({
+    hostedButtonId: "C75UW7FXGBRKA",
+  }).render("#paypal-container-C75UW7FXGBRKA")
+</script>
 
         .iching-container {
             background: rgba(255, 255, 255, 0.96);
