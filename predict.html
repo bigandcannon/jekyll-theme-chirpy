@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script 
-  src="https://www.paypal.com/sdk/js?client-id=BAAzgbmevProXDZN1F903cQGKW_U-vqztdvcxAY0ct7560OXd8I28VV6JOMbx9KYcoR82XA0gVO2cuVKic&components=hosted-buttons&disable-funding=venmo&currency=USD">
-</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>I Ching · Ancient Oracle</title>
+    <script src="https://www.paypal.com/sdk/js?client-id=BAAzgbmevProXDZN1F903cQGKW_U-vqztdvcxAY0ct7560OXd8I28VV6JOMbx9KYcoR82XA0gVO2cuVKic&components=hosted-buttons&disable-funding=venmo&currency=USD"></script>
     <style>
         * {
             margin: 0;
@@ -14,212 +12,228 @@
             box-sizing: border-box;
         }
 
-        body {
-            background: linear-gradient(145deg, #f0f2f5 0%, #e6e9ef 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+    body {
+        background: linear-gradient(145deg, #f0f2f5 0%, #e6e9ef 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+        padding: 1.5rem;
+    }
+
+    .iching-container {
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(2px);
+        border-radius: 48px;
+        padding: 2rem 2rem 1.5rem;
+        max-width: 780px;
+        width: 100%;
+        margin: 2rem auto;
+        box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .hero {
+        text-align: center;
+        margin-bottom: 1.8rem;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #2c3e50, #4b6a8b);
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        letter-spacing: -0.3px;
+    }
+
+    .hero .badge {
+        display: inline-block;
+        background: #e5533d20;
+        color: #c13b24;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 0.3rem 1rem;
+        border-radius: 40px;
+        margin-top: 0.75rem;
+        backdrop-filter: blur(4px);
+    }
+
+    .callout {
+        background: #f9f1e6;
+        border-radius: 28px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
+        text-align: center;
+    }
+
+    .callout p {
+        font-size: 1.1rem;
+        line-height: 1.45;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .callout strong {
+        color: #e5533d;
+    }
+
+    .highlight {
+        background: #2c3e50;
+        color: white;
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 24px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
+
+    .iching-container button {
+        background: #2c3e50;
+        color: white;
+        border: none;
+        padding: 0.9rem 1.8rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        border-radius: 60px;
+        cursor: pointer;
+        transition: all 0.2s;
+        width: 100%;
+        max-width: 260px;
+        display: block;
+        margin: 0 auto 1.5rem auto;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+        letter-spacing: 1px;
+    }
+
+    .iching-container button:hover {
+        background: #e5533d;
+        transform: scale(1.02);
+        box-shadow: 0 12px 22px rgba(229, 83, 61, 0.3);
+    }
+
+    .iching-result {
+        margin-top: 1.8rem;
+        padding: 1.2rem;
+        background: white;
+        border-radius: 32px;
+        border-left: 6px solid #e5533d;
+        transition: all 0.2s;
+    }
+
+    .iching-result .section {
+        margin-bottom: 1.5rem;
+    }
+
+    .iching-result .section-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .iching-result .hexagram-name {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: #e5533d;
+        margin-top: 0.2rem;
+    }
+
+    .iching-result .explanation {
+        color: #4a5568;
+        line-height: 1.6;
+        margin-top: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .iching-result hr {
+        margin: 1rem 0;
+        border: 0;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .footer-note {
+        text-align: center;
+        font-size: 0.7rem;
+        color: #8a99aa;
+        margin-top: 2rem;
+        border-top: 1px solid #eef2f6;
+        padding-top: 1.2rem;
+    }
+
+    .footer-note p {
+        margin: 0.2rem 0;
+    }
+
+    #paypalWall {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        animation: fadeIn 0.4s ease;
+    }
+
+    #paypalWall p {
+        color: #2c3e50;
+        font-size: 1rem;
+        margin-bottom: 0.8rem;
+        font-weight: 500;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(4px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 550px) {
+        .iching-container {
             padding: 1.5rem;
         }
-      <div id="paypal-container-C75UW7FXGBRKA"></div>
-<script>
-  paypal.HostedButtons({
-    hostedButtonId: "C75UW7FXGBRKA",
-  }).render("#paypal-container-C75UW7FXGBRKA")
-</script>
-
-        .iching-container {
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(2px);
-            border-radius: 48px;
-            padding: 2rem 2rem 1.5rem;
-            max-width: 780px;
-            width: 100%;
-            margin: 2rem auto;
-            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 1.8rem;
-        }
-
         .hero h1 {
-            font-size: 2.2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #2c3e50, #4b6a8b);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            letter-spacing: -0.3px;
+            font-size: 1.8rem;
         }
-
-        .hero .badge {
-            display: inline-block;
-            background: #e5533d20;
-            color: #c13b24;
-            font-size: 0.8rem;
-            font-weight: 600;
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            margin-top: 0.75rem;
-            backdrop-filter: blur(4px);
-        }
-
-        .callout {
-            background: #f9f1e6;
-            border-radius: 28px;
-            padding: 1.2rem 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.02);
-            text-align: center;
-        }
-
         .callout p {
-            font-size: 1.1rem;
-            line-height: 1.45;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-        }
-
-        .callout strong {
-            color: #e5533d;
-        }
-
-        .highlight {
-            background: #2c3e50;
-            color: white;
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 24px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .iching-container button {
-            background: #2c3e50;
-            color: white;
-            border: none;
-            padding: 0.9rem 1.8rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.2s;
-            width: 100%;
-            max-width: 260px;
-            display: block;
-            margin: 0 auto 1.5rem auto;
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
-            letter-spacing: 1px;
-        }
-
-        .iching-container button:hover {
-            background: #e5533d;
-            transform: scale(1.02);
-            box-shadow: 0 12px 22px rgba(229, 83, 61, 0.3);
-        }
-
-        .iching-result {
-            margin-top: 1.8rem;
-            padding: 1.2rem;
-            background: white;
-            border-radius: 32px;
-            border-left: 6px solid #e5533d;
-            transition: all 0.2s;
-        }
-
-        .iching-result .section {
-            margin-bottom: 1.5rem;
-        }
-
-        .iching-result .section-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .iching-result .hexagram-name {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: #e5533d;
-            margin-top: 0.2rem;
-        }
-
-        .iching-result .explanation {
-            color: #4a5568;
-            line-height: 1.6;
-            margin-top: 0.5rem;
             font-size: 0.95rem;
         }
-
-        .iching-result hr {
-            margin: 1rem 0;
-            border: 0;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .footer-note {
-            text-align: center;
-            font-size: 0.7rem;
-            color: #8a99aa;
-            margin-top: 2rem;
-            border-top: 1px solid #eef2f6;
-            padding-top: 1.2rem;
-        }
-
-        .footer-note p {
-            margin: 0.2rem 0;
-        }
-
-        @media (max-width: 550px) {
-            .iching-container {
-                padding: 1.5rem;
-            }
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            .callout p {
-                font-size: 0.95rem;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 <div class="iching-container">
     <div class="hero">
-        <h1>⚡ I Ching · Ancient Oracle</h1>
-        <div class="badge">✨ Ancient divine wisdom · High accuracy · Trusted for millennia ✨</div>
+        <h1> I Ching · Ancient Oracle</h1>
+        <div class="badge"> Ancient divine wisdom · High accuracy · Trusted for millennia </div>
     </div>
 
-    <div class="callout">
-        <p><span class="highlight">🔮 PREDICT YOUR FATE</span> – Based on the timeless I Ching (Book of Changes) and the alchemical secrets of the <strong>Zhouyi Cantong Qi</strong>.</p>
-        <p>⚡ <strong>One free reading per person.</strong> Click below and receive your personalized hexagram.</p>
-    </div>
+<div class="callout">
+    <p><span class="highlight"> PREDICT YOUR FATE</span> – Based on the timeless I Ching (Book of Changes) and the alchemical secrets of the <strong>Zhouyi Cantong Qi</strong>.</p>
+    <p> <strong>One free reading per person.</strong> Click below and receive your personalized hexagram.</p>
+</div>
 
-    <button id="getIChingBtn">✨ PREDICT ✨</button>
-    <div id="ichingResult" class="iching-result" style="display: none;"></div>
+<button id="getIChingBtn"> PREDICT </button>
 
-    <div class="footer-note">
-        <p>🎁 First reading is <strong>free</strong> (one per person).</p>
-        <p>💎 Additional readings: $2.99 each · Unlimited: $9.99 (coming soon).</p>
-        <p>🌙 This is a demo — no real payment required.</p>
-    </div>
+<div id="paypalWall" style="display:none;">
+    <p>Your free reading has been used.<br>Unlock unlimited access to continue:</p>
+    <div id="paypal-container-C75UW7FXGBRKA" style="display:inline-block;"></div>
+</div>
+
+<div id="ichingResult" class="iching-result" style="display: none;"></div>
+
+<div class="footer-note">
+    <p> First reading is <strong>free</strong> (one per person).</p>
+    <p> Additional readings: $2.99 each · Unlimited: $9.99 (coming soon).</p>
+</div>
 </div>
 
 <script>
 // --------------------------------------------------------------
-// 64 Hexagrams (upper, lower) -> English name (only English word) and detailed explanation
-// incorporating Zhouyi Cantong Qi (The Seal of the Unity of the Three) alchemical wisdom.
+// 64 Hexagrams (upper, lower) -> English name and detailed explanation
 // --------------------------------------------------------------
 const iChingMap = {
   "1,1": { name: "Heaven", explanation: "The Creative. Pure Yang, infinite potential. Like the unceasing movement of the heavens, you are called to act with strength, creativity, and integrity. In Cantong Qi, this corresponds to the primordial Qi — the source of all transformation. Perseverance brings great success." },
@@ -357,72 +371,82 @@ function getIChing() {
   };
 }
 
-// ---------- 免费次数限制 ----------
+// ---------- Access Control ----------
 const FREE_TRIAL_KEY = 'iching_free_used';
+const PAID_ACCESS_KEY = 'iching_paid_access';
 
 function hasUsedFreeTrial() {
   return localStorage.getItem(FREE_TRIAL_KEY) === 'true';
+}
+
+function hasPaidAccess() {
+  return localStorage.getItem(PAID_ACCESS_KEY) === 'true';
 }
 
 function markFreeTrialUsed() {
   localStorage.setItem(FREE_TRIAL_KEY, 'true');
 }
 
-function showPaymentPrompt() {
-  const resultDiv = document.getElementById('ichingResult');
-  resultDiv.style.display = 'block';
-  resultDiv.innerHTML = `
-    <div class="section">
-      <div class="section-title">⛔ Free trial already used</div>
-      <div class="explanation">
-        <p>You have already claimed your <strong>one free prediction</strong>. To continue using the I Ching Oracle, please support the project.</p>
-        <p>💳 <strong>$2.99 per additional reading</strong> or <strong>$9.99 for unlimited access</strong> (coming soon).</p>
-        <p>🔜 For demo purposes, you can <button id="demoResetBtn" style="background:#e5533d; color:white; border:none; padding:6px 12px; border-radius:30px; cursor:pointer;">Reset demo cache</button> to test again.</p>
-      </div>
-    </div>
-  `;
-  const resetBtn = document.getElementById('demoResetBtn');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      localStorage.removeItem(FREE_TRIAL_KEY);
-      location.reload();
-    });
+function showPaymentWall() {
+  const btn = document.getElementById('getIChingBtn');
+  const wall = document.getElementById('paypalWall');
+  if (btn) btn.style.display = 'none';
+  if (wall) wall.style.display = 'block';
+
+  if (typeof paypal !== 'undefined') {
+    paypal.HostedButtons({
+      hostedButtonId: "C75UW7FXGBRKA",
+      onComplete: function(data) {
+        localStorage.setItem(PAID_ACCESS_KEY, 'true');
+        alert('Thank you! Your access is now unlocked. The page will refresh.');
+        location.reload();
+      }
+    }).render("#paypal-container-C75UW7FXGBRKA");
   }
 }
 
 function showResult() {
-  if (hasUsedFreeTrial()) {
-    showPaymentPrompt();
+  if (hasUsedFreeTrial() && !hasPaidAccess()) {
+    showPaymentWall();
     return;
   }
-  
+
   const res = getIChing();
   const resultDiv = document.getElementById('ichingResult');
   resultDiv.style.display = 'block';
   resultDiv.innerHTML = `
     <div class="section">
-      <div class="section-title">✨ What you are experiencing now</div>
+      <div class="section-title"> What you are experiencing now</div>
       <div class="hexagram-name">${res.original.name}</div>
       <div class="explanation">${res.original.explanation}</div>
     </div>
     <div class="section">
-      <div class="section-title">🔮 What you will experience in the future</div>
+      <div class="section-title"> What you will experience in the future</div>
       <div class="hexagram-name">${res.changed.name}</div>
       <div class="explanation">${res.changed.explanation}</div>
     </div>
     <hr>
-    <p style="font-size:0.8rem; color:#888;">⚡ Reading time: ${res.date} · Changing line: ${res.movingYao}</p>
-    <p style="font-size:0.8rem; margin-top:8px; background:#fff1e0; padding:8px; border-radius:20px;">🎁 This was your <strong>free prediction</strong>. Next time you will be asked to pay.</p>
+    <p style="font-size:0.8rem; color:#888;"> Reading time: ${res.date} · Changing line: ${res.movingYao}</p>
+ ${!hasPaidAccess() ? `<p style="font-size:0.8rem; margin-top:8px; background:#fff1e0; padding:8px; border-radius:20px;"> This was your <strong>free prediction</strong>. Next time unlock unlimited access below.</p>` : ''}
   `;
-  markFreeTrialUsed();
+
+  if (!hasPaidAccess()) {
+    markFreeTrialUsed();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   const btn = document.getElementById('getIChingBtn');
   if (btn) {
     btn.addEventListener('click', showResult);
-  } else {
-    console.error("Button not found");
+  }
+
+  // If returning after payment or already paid, ensure correct UI state
+  if (hasPaidAccess()) {
+    document.getElementById('getIChingBtn').style.display = 'block';
+    document.getElementById('paypalWall').style.display = 'none';
+  } else if (hasUsedFreeTrial()) {
+    showPaymentWall();
   }
 });
 </script>
