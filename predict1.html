@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Ching · Ancient Oracle</title>
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: linear-gradient(145deg, #f0f2f5 0%, #e6e9ef 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            padding: 1.5rem;
+        }
+
+        .iching-container {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(2px);
+            border-radius: 48px;
+            padding: 2rem 2rem 1.5rem;
+            max-width: 780px;
+            width: 100%;
+            margin: 2rem auto;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.25), 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .hero { text-align: center; margin-bottom: 1.8rem; }
+        .hero h1 {
+            font-size: 2.2rem; font-weight: 700;
+            background: linear-gradient(135deg, #2c3e50, #4b6a8b);
+            background-clip: text; -webkit-background-clip: text; color: transparent;
+        }
+        .hero .badge {
+            display: inline-block; background: #e5533d20; color: #c13b24;
+            font-size: 0.8rem; font-weight: 600; padding: 0.3rem 1rem;
+            border-radius: 40px; margin-top: 0.75rem;
+        }
+
+        .callout {
+            background: #f9f1e6; border-radius: 28px; padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem; text-align: center;
+        }
+        .callout p { font-size: 1.1rem; line-height: 1.45; color: #2c3e50; margin-bottom: 0.5rem; }
+        .callout strong { color: #e5533d; }
+        .highlight {
+            background: #2c3e50; color: white; display: inline-block;
+            padding: 0.2rem 0.6rem; border-radius: 24px; font-size: 0.85rem; font-weight: 500;
+        }
+
+        .iching-container button {
+            background: #2c3e50; color: white; border: none; padding: 0.9rem 1.8rem;
+            font-size: 1.2rem; font-weight: 600; border-radius: 60px; cursor: pointer;
+            transition: all 0.2s; width: 100%; max-width: 260px; display: block;
+            margin: 0 auto 1.5rem auto; box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+        }
+        .iching-container button:hover {
+            background: #e5533d; transform: scale(1.02);
+            box-shadow: 0 12px 22px rgba(229, 83, 61, 0.3);
+        }
+
+        .iching-result {
+            margin-top: 1.8rem; padding: 1.2rem; background: white;
+            border-radius: 32px; border-left: 6px solid #e5533d;
+        }
+        .iching-result .section { margin-bottom: 1.5rem; }
+        .iching-result .section-title {
+            font-size: 1.2rem; font-weight: bold; color: #2c3e50;
+            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;
+        }
+        .iching-result .hexagram-name { font-size: 1.3rem; font-weight: 800; color: #e5533d; }
+        .iching-result .explanation { color: #4a5568; line-height: 1.6; margin-top: 0.5rem; font-size: 0.95rem; }
+        .iching-result hr { margin: 1rem 0; border: 0; border-top: 1px solid #e2e8f0; }
+
+        .footer-note { text-align: center; font-size: 0.7rem; color: #8a99aa; margin-top: 2rem; border-top: 1px solid #eef2f6; padding-top: 1.2rem; }
+        .footer-note p { margin: 0.2rem 0; }
+
+        /* PayPal 区域 */
+        .paypal-container {
+            text-align: center; margin: 1.5rem auto; padding: 1.5rem;
+            background: #fff8e1; border-radius: 24px;
+            border: 2px dashed #FFD140; max-width: 400px; display: none;
+        }
+        .paypal-container .payment-title { font-size: 1.1rem; font-weight: 600; color: #2c3e50; margin-bottom: 1rem; }
+        .paypal-container .payment-desc { font-size: 0.9rem; color: #666; margin-bottom: 1rem; }
+
+        /* PayPal 按钮容器 */
+        #paypal-button-container { margin: 1rem 0; min-height: 45px; }
+
+        .payment-note {
+            margin-top: 1rem; font-size: 0.8rem; color: #888;
+        }
+
+        @media (max-width: 550px) {
+            .iching-container { padding: 1.5rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .callout p { font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="iching-container">
+    <div class="hero">
+        <h1>I Ching · Ancient Oracle</h1>
+        <div class="badge">Ancient divine wisdom · High accuracy · Trusted for millennia</div>
+    </div>
+
+    <div class="callout">
+        <p><span class="highlight">PREDICT YOUR FATE</span> – Based on the timeless I Ching (Book of Changes) and the alchemical secrets of the <strong>Zhouyi Cantong Qi</strong>.</p>
+        <p><strong>One free reading per person.</strong> Click below and receive your personalized hexagram.</p>
+    </div>
+
+    <button id="getIChingBtn">PREDICT</button>
+    <div id="ichingResult" class="iching-result" style="display: none;"></div>
+
+    <!-- PayPal 智能支付按钮区域 -->
+    <div id="paypalSection" class="paypal-container">
+        <div class="payment-title">✨ Unlock Your Next Reading</div>
+        <div class="payment-desc">You have used your free reading. Complete the secure payment below to continue.</div>
+        <div id="paypal-button-container"></div>
+        <div class="payment-note">🔒 Payment is verified automatically. No manual confirmation needed.</div>
+    </div>
+
+    <div class="footer-note">
+        <p>First reading is <strong>free</strong> (one per person).</p>
+        <p>Additional readings: $2.99 each · Unlimited: $9.99 (coming soon).</p>
+        <p>This is a demo — use PayPal sandbox for testing.</p>
+    </div>
+</div>
+
+<script>
+// --------------------------------------------------------------
+// 64 Hexagrams
+// --------------------------------------------------------------
+const iChingMap = {
+  "1,1": { name: "Heaven", explanation: "The Creative. Pure Yang, infinite potential. Like the unceasing movement of the heavens, you are called to act with strength, creativity, and integrity. In Cantong Qi, this corresponds to the primordial Qi — the source of all transformation. Perseverance brings great success." },
+  "1,2": { name: "Treading", explanation: "Careful conduct. Walking upon the tiger's tail without being bitten. This hexagram advises caution and proper behavior in delicate situations. In alchemical terms, it represents the careful handling of internal energies — one step at a time avoids disaster." },
+  "1,3": { name: "Fellowship", explanation: "Harmony among people. Cooperation and mutual understanding are key. Just as mercury and lead unite in the alchemical crucible, so should you seek union with like-minded souls. Success comes through open communication." },
+  "1,4": { name: "Innocence", explanation: "Act without deceit. The pure, uncarved block. Follow the natural way without scheming. In Cantong Qi, this is the state of 'original nature' before worldly desires cloud the mind. Avoid reckless action; spontaneity brings fortune." },
+  "1,5": { name: "Encounter", explanation: "Unexpected meeting. A powerful but potentially disruptive force enters your life. Be cautious of hidden influences. In alchemy, this is the sudden appearance of the 'guest' — a catalyst that can either refine or ruin your practice." },
+  "1,6": { name: "Conflict", explanation: "Dispute and litigation. Inner or outer tension arises. Seek mediation and avoid escalation. The Cantong Qi warns that conflict dissipates vital energy — better to yield temporarily than to engage in futile struggle." },
+  "1,7": { name: "Retreat", explanation: "Withdraw temporarily. Preserve your strength for a better time. Like a wise alchemist who knows when to let the elixir simmer undisturbed, you should step back and observe. Not a sign of weakness but of strategic patience." },
+  "1,8": { name: "Standstill", explanation: "Obstruction and stagnation. The superior person remains humble and avoids entanglement. In the alchemical process, this is the 'dark night' before the gold crystallizes. Do not force movement; cultivate inner stillness." },
+  "2,1": { name: "Breakthrough", explanation: "Decisive action. Removing obstacles with determination. The time has come to cut through illusions and false attachments. As the Cantong Qi says, 'When the vessel is full, pour it out' — make room for the new by decisively discarding the old." },
+  "2,2": { name: "Joy", explanation: "Pleasant interaction. Joyful communication but beware of shallow gossip. True joy arises from the harmony of yin and yang within. In alchemy, this is the 'merging of breaths' — a lighthearted yet profound exchange of energies." },
+  "2,3": { name: "Revolution", explanation: "Radical change. The old skin must be shed. Timing is crucial: change when the time is ripe. This hexagram echoes the alchemical principle of 'death and rebirth' — the lead must die for gold to be born." },
+  "2,4": { name: "Following", explanation: "Adapt and flow. Yield to the greater currents of life. Not passive submission, but wise alignment. In Cantong Qi, this is the 'wu wei' of internal alchemy — effortless action that follows the Tao." },
+  "2,5": { name: "Excess", explanation: "Critical mass. The burden is heavy; you must stand alone with integrity. Like a cauldron filled to the brim, any extra drop will cause overflow. Do not add more — instead, allow the process to complete naturally." },
+  "2,6": { name: "Exhaustion", explanation: "Difficulties press from all sides. Endure patiently; help will come. The alchemist knows that the darkest hour precedes the dawn. Conserve your energy, do not waste it on resistance. Trust in the cycle of change." },
+  "2,7": { name: "Influence", explanation: "Mutual attraction. Feelings and relationships flourish naturally. This is the magnetic pull between yin and yang. In the Cantong Qi, it is the 'union of opposites' — the foundation of all creation." },
+  "2,8": { name: "Gathering", explanation: "Assembly of talents. Unity and collective strength prevail. Like minerals gathering in the earth to form ore, you are called to bring people together for a common purpose. Shared wisdom amplifies power." },
+  "3,1": { name: "Great Possession", explanation: "Abundance and prosperity. Possess great wealth through virtue, not greed. The alchemist who has refined the elixir does not hoard it but shares it. Your harvest is bountiful — use it wisely." },
+  "3,2": { name: "Divergence", explanation: "Estrangement and opposition. Seek common ground despite differences. In the alchemical process, sometimes ingredients resist blending — gentle heat and patience are required. Do not force unity." },
+  "3,3": { name: "Radiance", explanation: "Dependence on brightness. Clarity and civilized behavior bring benefit. Like a lamp that needs oil, you must maintain your inner light through practice. Cantong Qi: 'The sun and moon shine without cease' — so should your spirit." },
+  "3,4": { name: "Biting Through", explanation: "Remove obstructions. Law and punishment may be needed to break through rigidity. A decisive bite to separate truth from falsehood. In alchemy, this is the 'cracking of the shell' to reveal the kernel." },
+  "3,5": { name: "Cauldron", explanation: "Nourishing the wise. Reform and cultivate talent. The alchemical vessel (ding) transforms base materials into gold. Similarly, your environment and relationships are the crucible for your growth. Feed them well." },
+  "3,6": { name: "Before Completion", explanation: "Not yet finished. Cross with caution; success requires continued effort. The elixir is almost ready but not yet stable. One last step — but do not rush. Check every detail." },
+  "3,7": { name: "The Wanderer", explanation: "Travel and transience. Be humble and adaptable when away from home. Like a wandering alchemist seeking the master, you are in a transitional phase. Stay light, observe, and learn." },
+  "3,8": { name: "Progress", explanation: "Advancement with radiance. Rise step by step, like the sun climbing the sky. The Cantong Qi says: 'The great light illuminates the four directions.' Your efforts are now visible to all." },
+  "4,1": { name: "Great Power", explanation: "Strength and vigor. Use power justly; avoid excess. The alchemist's fire must be carefully regulated — too much burns the vessel. Harness your energy with discipline and purpose." },
+  "4,2": { name: "Marrying Maiden", explanation: "Improper union. Beware of ill-matched alliances. Not every combination leads to gold. Some mixtures produce only slag. Examine your partnerships and commitments carefully." },
+  "4,3": { name: "Fullness", explanation: "Abundance at its peak. Enjoy but know decline will follow. The moon wanes after it waxes. Do not cling to peak experience; prepare for the inevitable descent with equanimity." },
+  "4,4": { name: "Shock", explanation: "Thunderous upheaval. Remain calm; face crisis with courage. Like an earthquake that shakes the alchemical vessel, disturbance can be a catalyst for transformation. Do not panic — let the shock realign you." },
+  "4,5": { name: "Duration", explanation: "Persistence and constancy. Success through enduring effort. The elixir requires long, steady heat. Small, consistent actions over time yield the greatest results." },
+  "4,6": { name: "Deliverance", explanation: "Liberation from trouble. Act decisively to escape danger. The cage door has opened — but you must step through. Take the opportunity to free yourself from old patterns." },
+  "4,7": { name: "Small Excess", explanation: "Minor overstepping. Be careful; small mistakes can accumulate. Like a tiny impurity in the alchemical mixture, a small error can spoil the whole work. Attend to details." },
+  "4,8": { name: "Enthusiasm", explanation: "Joy and excitement. Plan well and lead others happily. Good times are here, but don't let exuberance cloud judgment. The Cantong Qi advises: 'When joy arises, the work is half done — but not yet finished.'" },
+  "5,1": { name: "Small Harvest", explanation: "Accumulating modestly. A little gain; prepare for future growth. Like gathering herbs for the elixir, each small addition contributes to the final product. Be patient and persistent." },
+  "5,2": { name: "Inner Truth", explanation: "Sincerity moves all. Even pigs and fish are touched by genuine trust. The alchemist's most powerful ingredient is integrity. When you are true, the universe responds." },
+  "5,3": { name: "Family", explanation: "Nurturing the household. Harmony starts at home. Before you can refine the external world, you must balance the internal. Tend to your immediate environment with care." },
+  "5,4": { name: "Increase", explanation: "Benefit and expansion. Gain through generosity and giving. The more you share your abundance, the more returns to you. This is the alchemical principle of 'loss leading to gain'." },
+  "5,5": { name: "Gentle Penetration", explanation: "Gradual influence. Softness succeeds where force fails. Like wind eroding a mountain, small persistent actions create change. Do not push; infiltrate gently." },
+  "5,6": { name: "Dispersion", explanation: "Scattering and renewal. Disband old patterns to regroup. Sometimes the elixir must be dissolved and recombined. Let go of outworn structures to allow new ones to form." },
+  "5,7": { name: "Gradual Progress", explanation: "Slow but steady. The maiden marries in good time. Do not rush the process; each step has its season. The Cantong Qi compares this to the slow turning of the seasons — inevitable and perfect." },
+  "5,8": { name: "Contemplation", explanation: "Observe and reflect. Learn from the wise without prejudice. Before you act, see clearly. Like an alchemist watching the color changes in the crucible, know when to intervene and when to wait." },
+  "6,1": { name: "Waiting", explanation: "Patience brings success. Do not rush; the time is not yet ripe. The alchemical fire must be just right — not too hot, not too cold. Cultivate the art of expectant waiting." },
+  "6,2": { name: "Restriction", explanation: "Discipline and moderation. Excessive limitation is harmful. The alchemical vessel needs a lid but not too tight. Find the balance between control and freedom." },
+  "6,3": { name: "Already Completed", explanation: "Order after chaos. Maintain vigilance; do not become complacent. The elixir is ready, but one careless moment can ruin it. Celebrate but remain attentive." },
+  "6,4": { name: "Beginnings", explanation: "Difficulty at the start. Build foundations; help is needed. Every great work begins with struggle. Seek a teacher or ally to guide you through the initial confusion." },
+  "6,5": { name: "The Well", explanation: "Nourishment without change. Stable support for the community. Like an inexhaustible well, your inner resources can serve others. Keep your source clean and accessible." },
+  "6,6": { name: "The Abyss", explanation: "Danger repeated. Stay sincere and cautious; you will overcome. Water flowing over water — the same peril again and again. In Cantong Qi, this is the 'testing of the elixir' — each trial refines you further." },
+  "6,7": { name: "Obstruction", explanation: "Hardship ahead. Turn back or seek help; avoid direct assault. Mountains and rivers block the path. Do not charge blindly; find a guide or a different route." },
+  "6,8": { name: "Union", explanation: "Alignment with others. Support and togetherness bring good fortune. Like the joining of mercury and sulfur, partnership creates something greater than the sum of its parts." },
+  "7,1": { name: "Great Accumulation", explanation: "Store up strength. Prepare for future challenges. The alchemist gathers rare herbs over many years. Your current efforts are building a reservoir for tomorrow." },
+  "7,2": { name: "Decrease", explanation: "Sacrifice for a greater cause. Loss now leads to gain later. Sometimes you must let go of a lesser treasure to obtain a greater one. Trust the process of diminishment." },
+  "7,3": { name: "Adornment", explanation: "Elegance and decoration. Substance is more important than surface. Do not be fooled by external beauty; the true value lies within. In alchemy, the outer form mirrors the inner essence." },
+  "7,4": { name: "Nourishment", explanation: "Provide for oneself. Speak truthfully; seek proper nourishment. Feed your body, mind, and spirit with what is pure and vital. The Cantong Qi says: 'The mouth is the gateway of life and death' — choose carefully." },
+  "7,5": { name: "Corruption", explanation: "Rottenness and remedy. Reform from within. When decay sets in, you must root out the cause. This is the 'cleansing fire' that purifies the vessel before a new operation." },
+  "7,6": { name: "Youthful Folly", explanation: "Immaturity and inexperience. Seek guidance from a teacher. Do not act on half-knowledge. Find a wise master who has walked the path before you." },
+  "7,7": { name: "Mountain", explanation: "Stillness and meditation. Stop when appropriate; rest. The great mountain stands unmoved. Sometimes the most powerful action is non-action. Let your mind settle like sediment in still water." },
+  "7,8": { name: "Falling", explanation: "Collapse and decay. The inferior rise; the superior retreat. Like a cliff crumbling into the sea, what is unsustainable must fall. Do not cling; let go and seek higher ground." },
+  "8,1": { name: "Peace", explanation: "Harmonious flow. Small goes out, great comes in; everything is smooth. The alchemical crucible is at perfect temperature — the elixir brews effortlessly. Enjoy this rare moment of balance." },
+  "8,2": { name: "Approach", explanation: "Supervision and leadership. Approach others with goodwill. The sage guides without dominating. Lead by example, not by force." },
+  "8,3": { name: "Darkening of Light", explanation: "Injury and hiding. The wise endure hardship without despair. When the sun is eclipsed, it does not lose its essence — it waits. Your light may be hidden but not extinguished." },
+  "8,4": { name: "Return", explanation: "Cyclical renewal. The turning point; good fortune returns. After darkness, dawn. The elixir that seemed lost has begun to form again. Celebrate the return of hope." },
+  "8,5": { name: "Ascending", explanation: "Rising step by step. Steady progress leads to success. Like a tree growing toward the sky, your efforts are lifting you. Do not look down." },
+  "8,6": { name: "The Army", explanation: "Discipline and leadership. Mobilize resources wisely. A well-organized force can overcome any obstacle. Gather your resources and act with unity of purpose." },
+  "8,7": { name: "Modesty", explanation: "Humble and self-effacing. Great fortune for the modest. The mountain conceals its height. True power does not boast. In Cantong Qi, humility is the key that unlocks the hidden chambers of alchemy." },
+  "8,8": { name: "The Receptive", explanation: "Yielding and supportive. Endure with strength; embrace the earth's virtue. Like the earth receiving seeds, you are called to nurture and sustain. Not passive, but powerfully receptive." }
+};
+
+function getHexagramInfo(upper, lower) {
+  const key = `${upper},${lower}`;
+  if (iChingMap[key]) return iChingMap[key];
+  return { name: `Hexagram ${upper}${lower}`, explanation: "Ancient wisdom speaks — reflect on your situation with a calm heart." };
+}
+
+function getHourNumber(hour) {
+  const hourMap = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12];
+  return hourMap[hour];
+}
+
+function flipBitInTrigram(trigramNum, linePos) {
+  const trigramBits = {
+    1: [1,1,1], 2: [1,1,0], 3: [1,0,1], 4: [1,0,0],
+    5: [0,1,1], 6: [0,1,0], 7: [0,0,1], 8: [0,0,0]
+  };
+  const bits = [...trigramBits[trigramNum]];
+  bits[linePos] = 1 - bits[linePos];
+  for (let [k, v] of Object.entries(trigramBits)) {
+    if (v[0] === bits[0] && v[1] === bits[1] && v[2] === bits[2]) return parseInt(k);
+  }
+  return trigramNum;
+}
+
+function getIChing() {
+  const now = new Date();
+  const year = now.getFullYear(), month = now.getMonth() + 1, day = now.getDate();
+  const hour = now.getHours(), minute = now.getMinutes();
+  const hourNum = getHourNumber(hour);
+  const sumBase = year + month + day + minute;
+  const sumFull = year + month + day + hourNum + minute;
+
+  let upper = sumBase % 8; if (upper === 0) upper = 8;
+  let lower = sumFull % 8; if (lower === 0) lower = 8;
+  let moving = sumFull % 6; if (moving === 0) moving = 6;
+
+  let newUpper = upper, newLower = lower;
+  if (moving <= 3) { newLower = flipBitInTrigram(lower, moving - 1); }
+  else { newUpper = flipBitInTrigram(upper, moving - 4); }
+
+  return {
+    original: getHexagramInfo(upper, lower),
+    changed: getHexagramInfo(newUpper, newLower),
+    movingYao: ["bottom","second","third","fourth","fifth","top"][moving-1],
+    date: `${year}-${month}-${day} ${hour}:${minute.toString().padStart(2,'0')}`
+  };
+}
+
+// ---------- 状态管理 ----------
+const FREE_TRIAL_KEY = 'iching_free_used';
+const PAID_CREDIT_KEY = 'iching_paid_credit';
+
+function hasUsedFreeTrial() { return localStorage.getItem(FREE_TRIAL_KEY) === 'true'; }
+function hasPaidCredit() { return localStorage.getItem(PAID_CREDIT_KEY) === 'true'; }
+function markFreeTrialUsed() { localStorage.setItem(FREE_TRIAL_KEY, 'true'); }
+function addPaidCredit() { localStorage.setItem(PAID_CREDIT_KEY, 'true'); }
+function consumePaidCredit() { localStorage.removeItem(PAID_CREDIT_KEY); }
+
+function showPaymentPrompt() {
+  const resultDiv = document.getElementById('ichingResult');
+  const paypalSection = document.getElementById('paypalSection');
+  
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `
+    <div class="section">
+      <div class="section-title">Free trial already used</div>
+      <div class="explanation">
+        <p>You have already claimed your <strong>one free prediction</strong>. To continue using the I Ching Oracle, please complete the secure payment below.</p>
+        <p><strong>$2.99 per additional reading</strong></p>
+      </div>
+    </div>
+  `;
+  paypalSection.style.display = 'block';
+  document.getElementById('getIChingBtn').style.display = 'none';
+}
+
+function showResult() {
+  const canUseFree = !hasUsedFreeTrial();
+  const canUsePaid = hasPaidCredit();
+  
+  if (!canUseFree && !canUsePaid) {
+    showPaymentPrompt();
+    return;
+  }
+  
+  const res = getIChing();
+  const resultDiv = document.getElementById('ichingResult');
+  const isFreeUse = !hasUsedFreeTrial();
+  
+  resultDiv.style.display = 'block';
+  resultDiv.innerHTML = `
+    <div class="section">
+      <div class="section-title">What you are experiencing now</div>
+      <div class="hexagram-name">${res.original.name}</div>
+      <div class="explanation">${res.original.explanation}</div>
+    </div>
+    <div class="section">
+      <div class="section-title">What you will experience in the future</div>
+      <div class="hexagram-name">${res.changed.name}</div>
+      <div class="explanation">${res.changed.explanation}</div>
+    </div>
+    <hr>
+    <p style="font-size:0.8rem; color:#888;">Reading time: ${res.date} · Changing line: ${res.movingYao}</p>
+    ${isFreeUse 
+      ? `<p style="font-size:0.8rem; margin-top:8px; background:#fff1e0; padding:8px; border-radius:20px;">This was your <strong>free prediction</strong>. Next time you will be asked to pay $2.99.</p>`
+      : `<p style="font-size:0.8rem; margin-top:8px; background:#e8f5e9; padding:8px; border-radius:20px;">✅ <strong>Paid reading completed.</strong> Thank you! Want another? Pay $2.99 again.</p>`
+    }
+  `;
+  
+  if (isFreeUse) { markFreeTrialUsed(); }
+  else { consumePaidCredit(); }
+  
+  // 使用后立即隐藏PREDICT，显示PayPal
+  document.getElementById('getIChingBtn').style.display = 'none';
+  document.getElementById('paypalSection').style.display = 'block';
+}
+
+// ---------- PayPal 智能按钮初始化 ----------
+function initPayPalButton() {
+  if (typeof paypal === 'undefined') {
+    console.error('PayPal SDK not loaded');
+    return;
+  }
+  
+  paypal.Buttons({
+    // 创建订单
+    createOrder: function(data, actions) {
+      return actions.order.create({
+        purchase_units: [{
+          amount: { value: '2.99' },
+          description: 'I Ching Oracle Reading'
+        }]
+      });
+    },
+    
+    // 支付成功回调 —— 只有真正完成支付才会执行
+    onApprove: function(data, actions) {
+      return actions.order.capture().then(function(details) {
+        // ✅ 支付已确认，解锁额度
+        addPaidCredit();
+        
+        // 显示成功消息
+        const resultDiv = document.getElementById('ichingResult');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+          <div class="section">
+            <div class="section-title" style="color: #27ae60;">✅ Payment Successful!</div>
+            <div class="explanation">
+              <p>Thank you, <strong>${details.payer.name.given_name}</strong>!</p>
+              <p>Your payment of <strong>$2.99</strong> has been verified.</p>
+              <p>You now have <strong>one reading</strong> unlocked.</p>
+            </div>
+          </div>
+        `;
+        
+        // 显示PREDICT按钮，隐藏PayPal
+        document.getElementById('getIChingBtn').style.display = 'block';
+        document.getElementById('paypalSection').style.display = 'none';
+      });
+    },
+    
+    // 支付取消
+    onCancel: function(data) {
+      const resultDiv = document.getElementById('ichingResult');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <div class="section">
+          <div class="section-title" style="color: #e5533d;">❌ Payment Cancelled</div>
+          <div class="explanation">
+            <p>You cancelled the payment. No charge was made.</p>
+            <p>Click the PayPal button below if you wish to try again.</p>
+          </div>
+        </div>
+      `;
+    },
+    
+    // 支付错误
+    onError: function(err) {
+      console.error('PayPal Error:', err);
+      const resultDiv = document.getElementById('ichingResult');
+      resultDiv.style.display = 'block';
+      resultDiv.innerHTML = `
+        <div class="section">
+          <div class="section-title" style="color: #e5533d;">⚠️ Payment Error</div>
+          <div class="explanation">
+            <p>Something went wrong with the payment. Please try again.</p>
+          </div>
+        </div>
+      `;
+    }
+  }).render('#paypal-button-container');
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('getIChingBtn');
+  const paypalSection = document.getElementById('paypalSection');
+  const resultDiv = document.getElementById('ichingResult');
+  
+  const freeUsed = hasUsedFreeTrial();
+  const hasCredit = hasPaidCredit();
+  
+  // 初始化PayPal按钮
+  initPayPalButton();
+  
+  if (btn) {
+    if (freeUsed && !hasCredit) {
+      // 免费已用，无付费额度：隐藏PREDICT，显示PayPal
+      btn.style.display = 'none';
+      paypalSection.style.display = 'block';
+    } else {
+      // 有免费次数或有付费额度：显示PREDICT
+      btn.style.display = 'block';
+      btn.addEventListener('click', showResult);
+      paypalSection.style.display = 'none';
+    }
+  }
+});
+</script>
+</body>
+</html>
